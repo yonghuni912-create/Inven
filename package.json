@@ -8,9 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:push": "drizzle-kit push",
+    "db:push": "drizzle-kit push:sqlite",
     "db:studio": "drizzle-kit studio",
-    "db:generate": "drizzle-kit generate",
+    "db:generate": "drizzle-kit generate:sqlite",
     "jobs:scheduler": "tsx jobs/scheduler.ts"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
     "crypto-js": "^4.2.0",
     "date-fns": "^3.0.0",
     "date-fns-tz": "^3.0.0",
+
     "drizzle-orm": "^0.29.0",
     "next": "14.2.35",
     "react": "^18.2.0",
