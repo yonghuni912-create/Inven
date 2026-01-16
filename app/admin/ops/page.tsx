@@ -2,6 +2,8 @@ import { db } from '@/db'
 import { jobRuns, regions } from '@/db/schema'
 import { eq, desc } from 'drizzle-orm'
 
+export const dynamic = 'force-dynamic'
+
 async function getJobLogs() {
   const logs = await db
     .select({

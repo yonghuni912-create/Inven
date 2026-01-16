@@ -4,6 +4,8 @@ import { eq, desc } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 async function getOrders() {
   const result = await db
     .select({

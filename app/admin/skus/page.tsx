@@ -2,6 +2,8 @@ import { db } from '@/db'
 import { skus } from '@/db/schema'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 async function getSKUs() {
   return await db
     .select()

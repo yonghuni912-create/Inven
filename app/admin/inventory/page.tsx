@@ -3,6 +3,8 @@ import { inventory, skus, locations } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 async function getInventory() {
   const result = await db
     .select({

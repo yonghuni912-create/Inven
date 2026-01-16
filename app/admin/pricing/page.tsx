@@ -3,6 +3,8 @@ import { skuPrices, skus } from '@/db/schema'
 import { eq, desc, isNull, or, gte } from 'drizzle-orm'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 async function getPrices() {
   const result = await db
     .select({

@@ -49,7 +49,7 @@ export async function matchStore(
     );
 
     const result = await db
-      .select({ store_id: stores.store_id })
+      .select({ store_id: stores.store_id, match_address_key: stores.match_address_key })
       .from(stores)
       .where(
         and(
@@ -73,7 +73,7 @@ export async function matchStore(
     const tags = orderData.tags.split(',').map((t: string) => t.trim());
     
     const result = await db
-      .select({ store_id: stores.store_id })
+      .select({ store_id: stores.store_id, store_code: stores.store_code })
       .from(stores)
       .where(
         and(
