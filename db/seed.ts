@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Database Seed Script
  * Run with: npx tsx db/seed.ts
  */
@@ -196,10 +196,10 @@ async function seed() {
       region_id: vancouver.region_id,
       store_id: i % 2 === 0 ? store1.store_id : store2.store_id,
       shopify_order_id: `DEMO-${Date.now()}-${i}`,
-      shopify_order_number: `#${1000 + i}`,
+      order_number: `#${1000 + i}`,
       order_date_at_utc: orderDate.toISOString(),
       order_type: orderTypes[Math.floor(Math.random() * orderTypes.length)],
-      status: 'CONFIRMED',
+      status: 'FULFILLED',
       total_amount: 0,
       currency: 'CAD',
     }).returning()
