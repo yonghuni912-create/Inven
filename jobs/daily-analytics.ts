@@ -7,63 +7,63 @@
  * - Send alerts to Slack
  */
 
-const { db } = require('../db')
-const { 
+import { db } from '../db';
+import { 
   skus, 
   forecast, 
   replenishmentRecommendations,
   emergencyKpiDaily,
   orders
-} = require('../db/schema')
-const { eq, and, gte, sql } = require('drizzle-orm')
-const { calculateDailyRate, calculateROP, calculateRecommendedQty, getInventorySummary } = require('../lib/inventory-calculations')
-const { analyzeDeadstockRisk, getHighRiskDeadstock } = require('../lib/deadstock-analysis')
-const { sendSlackNotification, formatStockoutAlert, formatDeadstockAlert, formatEmergencyOrderSummary } = require('../lib/slack')
-const { todayInTimezone } = require('../lib/datetime')
+} from '../db/schema';
+import { eq, and, gte, sql } from 'drizzle-orm';
+import { calculateDailyRate, calculateROP, calculateRecommendedQty, getInventorySummary } from '../lib/inventory-calculations';
+import { analyzeDeadstockRisk, getHighRiskDeadstock } from '../lib/deadstock-analysis';
+import { sendSlackNotification, formatStockoutAlert, formatDeadstockAlert } from '../lib/slack';
+import { todayInTimezone } from '../lib/datetime';
 
-async function run(region) {
-  console.log(`  Running daily analytics for region ${region.name}`)
-  const analysisDate = todayInTimezone(region.timezone)
+export async function run(region: any) {
+  console.log(`  Running daily analytics for region ${region.name}`);
+  const analysisDate = todayInTimezone(region.timezone);
 
   try {
     // 1. Calculate daily usage rates
-    await calculateUsageRates(region, analysisDate)
+    await calculateUsageRates(region, analysisDate);
 
     // 2. Calculate replenishment recommendations
-    const recommendations = await calculateReplenishments(region, analysisDate)
+    const recommendations = await calculateReplenishments(region, analysisDate);
 
     // 3. Analyze deadstock risk
-    await analyzeDeadstockRisk(region.region_id, analysisDate)
+    await analyzeDeadstockRisk(region.region_id, analysisDate);
 
     // 4. Calculate emergency order KPIs
-    await calculateEmergencyKPIs(region, analysisDate)
+    await calculateEmergencyKPIs(region, analysisDate);
 
     // 5. Send alerts to Slack
-    await sendAlerts(region, analysisDate, recommendations)
+    await sendAlerts(region, analysisDate, recommendations);
 
     return {
       message: 'Analytics completed',
       recommendations_generated: recommendations.length,
-    }
+    };
   } catch (error) {
-    console.error('Error in daily analytics:', error)
-    throw error
+    console.error('Error in daily analytics:', error);
+    throw error;
   }
 }
 
-async function calculateUsageRates(region, analysisDate) {
+async function calculateUsageRates(region: any, analysisDate: string) {
   const activeSkus = await db
     .select()
     .from(skus)
-    .where(eq(skus.active, true))
+    .where(eq(skus.active, true));
 
   for (const sku of activeSkus) {
-    const rate30 = await calculateDailyRate(sku.sku_id, region.region_id, 30)
-    const rate60 = await calculateDailyRate(sku.sku_id, region.region_id, 60)
-    const rate90 = await calculateDailyRate(sku.sku_id, region.region_id, 90)
+    const rate30 = await calculateDailyRate(sku.sku_id, region.region_id, 30);
+    const rate60 = await calculateDailyRate(sku.sku_id, region.region_id, 60);
+    const rate90 = await calculateDailyRate(sku.sku_id, region.region_id, 90);
 
     // Use most conservative (minimum) rate
-    const dailyRateUsed = Math.min(rate30, rate60, rate90)
+    const dailyRateUsed = Math.min(rate30, rate60, rate90);
 
     // Save forecast
     await db.insert(forecast).values({
@@ -75,17 +75,17 @@ async function calculateUsageRates(region, analysisDate) {
       daily_rate_90: rate90,
       daily_rate_used: dailyRateUsed,
       calculated_at_utc: new Date().toISOString(),
-    })
+    });
   }
 }
 
-async function calculateReplenishments(region, analysisDate) {
-  const recommendations = []
+async function calculateReplenishments(region: any, analysisDate: string) {
+  const recommendations: any[] = [];
 
   const activeSkus = await db
     .select()
     .from(skus)
-    .where(eq(skus.active, true))
+    .where(eq(skus.active, true));
 
   for (const sku of activeSkus) {
     // Get latest forecast
@@ -99,28 +99,28 @@ async function calculateReplenishments(region, analysisDate) {
           eq(forecast.forecast_date, analysisDate)
         )
       )
-      .limit(1)
+      .limit(1);
 
-    if (!latestForecast[0]) continue
+    if (!latestForecast[0]) continue;
 
-    const dailyRate = latestForecast[0].daily_rate_used
+    const dailyRate = latestForecast[0].daily_rate_used || 0;
 
     // Get inventory
-    const inventorySummary = await getInventorySummary(region.region_id, sku.sku_id)
-    const onHand = inventorySummary.available
+    const inventorySummary = await getInventorySummary(region.region_id, sku.sku_id);
+    const onHand = inventorySummary.available;
 
     // Calculate ROP
-    const rop = await calculateROP(sku.sku_id, dailyRate)
+    const rop = await calculateROP(sku.sku_id, dailyRate);
 
     // Calculate recommended qty
-    const { raw_qty, adjusted_qty } = await calculateRecommendedQty(sku.sku_id, onHand, rop)
+    const { raw_qty, adjusted_qty } = await calculateRecommendedQty(sku.sku_id, onHand, rop);
 
     // Determine priority
-    let priority = 'LOW'
+    let priority = 'LOW';
     if (onHand < rop * 0.5) {
-      priority = 'HIGH'
+      priority = 'HIGH';
     } else if (onHand < rop) {
-      priority = 'MEDIUM'
+      priority = 'MEDIUM';
     }
 
     // Save recommendation
@@ -135,7 +135,7 @@ async function calculateReplenishments(region, analysisDate) {
       adjusted_qty: adjusted_qty,
       priority: priority,
       calculated_at_utc: new Date().toISOString(),
-    })
+    });
 
     if (priority === 'HIGH') {
       recommendations.push({
@@ -143,14 +143,14 @@ async function calculateReplenishments(region, analysisDate) {
         name: sku.name,
         on_hand: onHand,
         rop: rop,
-      })
+      });
     }
   }
 
-  return recommendations
+  return recommendations;
 }
 
-async function calculateEmergencyKPIs(region, analysisDate) {
+async function calculateEmergencyKPIs(region: any, analysisDate: string) {
   // Count orders by type for the date
   const stats = await db
     .select({
@@ -165,10 +165,10 @@ async function calculateEmergencyKPIs(region, analysisDate) {
         eq(orders.region_id, region.region_id),
         gte(orders.order_date_at_utc, analysisDate)
       )
-    )
+    );
 
-  const total = stats[0]?.total || 0
-  const emergencyRate = total > 0 ? stats[0].emergency / total : 0
+  const total = stats[0]?.total || 0;
+  const emergencyRate = total > 0 ? (stats[0].emergency || 0) / total : 0;
 
   await db.insert(emergencyKpiDaily).values({
     region_id: region.region_id,
@@ -179,27 +179,25 @@ async function calculateEmergencyKPIs(region, analysisDate) {
     regular_orders: stats[0]?.regular || 0,
     emergency_rate: emergencyRate,
     calculated_at_utc: new Date().toISOString(),
-  })
+  });
 }
 
-async function sendAlerts(region, analysisDate, stockoutRisks) {
+async function sendAlerts(region: any, analysisDate: string, stockoutRisks: any[]) {
   if (!region.slack_webhook_url) {
-    console.log('  No Slack webhook configured, skipping alerts')
-    return
+    console.log('  No Slack webhook configured, skipping alerts');
+    return;
   }
 
   // Send stockout alerts
   if (stockoutRisks.length > 0) {
-    const alert = formatStockoutAlert(region.name, stockoutRisks)
-    await sendSlackNotification(region.slack_webhook_url, alert)
+    const alert = formatStockoutAlert(region.name, stockoutRisks);
+    await sendSlackNotification(region.slack_webhook_url, alert);
   }
 
   // Send deadstock alerts
-  const deadstockItems = await getHighRiskDeadstock(region.region_id, analysisDate)
+  const deadstockItems = await getHighRiskDeadstock(region.region_id, analysisDate);
   if (deadstockItems.length > 0) {
-    const alert = formatDeadstockAlert(region.name, deadstockItems)
-    await sendSlackNotification(region.slack_webhook_url, alert)
+    const alert = formatDeadstockAlert(region.name, deadstockItems);
+    await sendSlackNotification(region.slack_webhook_url, alert);
   }
 }
-
-module.exports = { run }

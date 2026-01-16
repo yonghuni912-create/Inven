@@ -28,7 +28,7 @@ jobs:
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
           ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
-        run: node jobs/scheduler.js
+        run: npm run jobs:scheduler
 
       - name: Upload job artifacts
         if: always()

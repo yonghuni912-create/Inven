@@ -3,14 +3,14 @@
  * Runs frequently to catch any missed webhooks
  */
 
-const { db } = require('../db')
-const { orders } = require('../db/schema')
-const { ShopifyClient } = require('../lib/shopify')
-const { decrypt } = require('../lib/encryption')
-const { desc } = require('drizzle-orm')
+import { db } from '../db';
+import { orders } from '../db/schema';
+import { ShopifyClient } from '../lib/shopify';
+import { decrypt } from '../lib/encryption';
+import { desc, eq } from 'drizzle-orm';
 
-async function run(region) {
-  console.log(`  Syncing Shopify orders for region ${region.name}`)
+export async function run(region: any) {
+  console.log(`  Syncing Shopify orders for region ${region.name}`);
 
   try {
     // Get last synced order timestamp
@@ -19,20 +19,20 @@ async function run(region) {
       .from(orders)
       .where(eq(orders.region_id, region.region_id))
       .orderBy(desc(orders.order_date_at_utc))
-      .limit(1)
+      .limit(1);
 
-    const since = lastOrder[0]?.order_date_at_utc
+    const since = lastOrder[0]?.order_date_at_utc;
 
     // Create Shopify client
     const client = new ShopifyClient({
       shop_domain: region.shop_domain,
       admin_token: decrypt(region.admin_token_enc),
-    })
+    });
 
     // Fetch orders
-    const shopifyOrders = await client.fetchOrders(since)
+    const shopifyOrders = await client.fetchOrders(since);
 
-    console.log(`  Found ${shopifyOrders.length} orders to sync`)
+    console.log(`  Found ${shopifyOrders.length} orders to sync`);
 
     // Process orders
     // Note: Actual order processing is handled by webhook endpoint
@@ -41,11 +41,9 @@ async function run(region) {
     return {
       message: `Synced ${shopifyOrders.length} orders`,
       orders_synced: shopifyOrders.length,
-    }
+    };
   } catch (error) {
-    console.error('Error syncing Shopify orders:', error)
-    throw error
+    console.error('Error syncing Shopify orders:', error);
+    throw error;
   }
 }
-
-module.exports = { run }
