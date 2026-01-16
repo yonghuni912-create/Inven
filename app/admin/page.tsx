@@ -69,7 +69,7 @@ export default async function AdminDashboard() {
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Today's Orders</p>
+              <p className="text-sm text-gray-500">Today&apos;s Orders</p>
               <p className="text-3xl font-bold text-green-600">{data.orderStats.today}</p>
             </div>
             <div className="text-4xl">📈</div>
