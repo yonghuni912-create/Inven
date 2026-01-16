@@ -25,33 +25,34 @@ export default async function SKUsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">SKUs / Products</h1>
+          <h1 className="text-3xl font-bold text-gray-900">품목(SKU) 관리</h1>
           <p className="mt-2 text-gray-600">품목 마스터 및 재고 정책 관리</p>
         </div>
         <Link
           href="/admin/skus/new"
-          className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
         >
-          + New SKU
+          <span>+</span>
+          <span>새 SKU</span>
         </Link>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-500">Total SKUs</p>
+          <p className="text-sm text-gray-500">전체 SKU</p>
           <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-500">Active</p>
+          <p className="text-sm text-gray-500">활성</p>
           <p className="text-2xl font-bold text-green-600">{stats.active}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-500">Expiry Managed</p>
+          <p className="text-sm text-gray-500">유통기한 관리</p>
           <p className="text-2xl font-bold text-blue-600">{stats.expiryManaged}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-500">Grade A</p>
+          <p className="text-sm text-gray-500">A등급</p>
           <p className="text-2xl font-bold text-purple-600">{stats.gradeA}</p>
         </div>
       </div>
@@ -63,7 +64,7 @@ export default async function SKUsPage() {
             <p className="text-gray-500 mb-4">등록된 SKU가 없습니다.</p>
             <Link
               href="/admin/skus/new"
-              className="text-primary-600 hover:text-primary-700 font-medium"
+              className="text-blue-600 hover:text-blue-700 font-medium"
             >
               첫 번째 SKU 추가하기 →
             </Link>
@@ -72,36 +73,16 @@ export default async function SKUsPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  SKU Code
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Pack Size
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  MOQ
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Lead Time
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Safety Stock
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  ABC Grade
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Expiry
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU 코드</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">품목명</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">포장 단위</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MOQ</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">리드타임</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">안전재고</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ABC등급</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">유통기한</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상태</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">작업</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -120,10 +101,10 @@ export default async function SKUsPage() {
                     <div className="text-sm text-gray-500">{sku.moq}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{sku.lead_time_days}d</div>
+                    <div className="text-sm text-gray-500">{sku.lead_time_days}일</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{sku.safety_stock_days}d</div>
+                    <div className="text-sm text-gray-500">{sku.safety_stock_days}일</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {sku.abc_grade ? (
@@ -147,27 +128,23 @@ export default async function SKUsPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {sku.active ? (
-                      <span className="px-2 py-1 text-xs font-medium rounded bg-green-100 text-green-800">
-                        Active
-                      </span>
+                      <span className="px-2 py-1 text-xs font-medium rounded bg-green-100 text-green-800">활성</span>
                     ) : (
-                      <span className="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-800">
-                        Inactive
-                      </span>
+                      <span className="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-800">비활성</span>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <Link
                       href={`/admin/skus/${sku.sku_id}`}
-                      className="text-primary-600 hover:text-primary-900 mr-4"
+                      className="text-blue-600 hover:text-blue-900 mr-4"
                     >
-                      View
+                      상세
                     </Link>
                     <Link
                       href={`/admin/skus/${sku.sku_id}/edit`}
                       className="text-gray-600 hover:text-gray-900"
                     >
-                      Edit
+                      수정
                     </Link>
                   </td>
                 </tr>

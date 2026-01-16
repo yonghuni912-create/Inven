@@ -52,27 +52,36 @@ export default async function OrdersPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Orders</h1>
-        <p className="mt-2 text-gray-600">주문 관리 및 매장 매칭</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">주문 관리</h1>
+          <p className="mt-2 text-gray-600">주문 관리 및 매장 매칭</p>
+        </div>
+        <Link
+          href="/admin/orders/new"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+        >
+          <span>+</span>
+          <span>새 주문</span>
+        </Link>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-500">Total Orders</p>
+          <p className="text-sm text-gray-500">전체 주문</p>
           <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-500">Emergency Orders</p>
+          <p className="text-sm text-gray-500">긴급 주문</p>
           <p className="text-2xl font-bold text-orange-600">{stats.emergency}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-500">Extra Orders</p>
+          <p className="text-sm text-gray-500">추가 주문</p>
           <p className="text-2xl font-bold text-blue-600">{stats.extra}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-500">Unmatched</p>
+          <p className="text-sm text-gray-500">미매칭</p>
           <p className="text-2xl font-bold text-red-600">{stats.unmatched}</p>
         </div>
       </div>
@@ -87,33 +96,15 @@ export default async function OrdersPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Order #
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Store
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Region
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Type
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Items
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Amount
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">주문번호</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">날짜</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">가맹점</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">리전</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">유형</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">품목수</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">금액</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상태</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">작업</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -127,7 +118,7 @@ export default async function OrdersPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
-                      {order.store_name || <span className="text-red-600">Unmatched</span>}
+                      {order.store_name || <span className="text-red-600">미매칭</span>}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -139,7 +130,7 @@ export default async function OrdersPage() {
                       order.order_type === 'EMERGENCY' ? 'bg-orange-100 text-orange-800' :
                       'bg-blue-100 text-blue-800'
                     }`}>
-                      {order.order_type}
+                      {order.order_type === 'REGULAR' ? '정규' : order.order_type === 'EMERGENCY' ? '긴급' : '추가'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -156,15 +147,15 @@ export default async function OrdersPage() {
                       order.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
                       'bg-yellow-100 text-yellow-800'
                     }`}>
-                      {order.status}
+                      {order.status === 'FULFILLED' ? '완료' : order.status === 'CANCELLED' ? '취소' : '대기'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <Link
                       href={`/admin/orders/${order.order_id}`}
-                      className="text-primary-600 hover:text-primary-900"
+                      className="text-blue-600 hover:text-blue-900"
                     >
-                      View
+                      상세
                     </Link>
                   </td>
                 </tr>

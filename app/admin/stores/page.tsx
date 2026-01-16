@@ -30,14 +30,15 @@ export default async function StoresPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Stores</h1>
+          <h1 className="text-3xl font-bold text-gray-900">가맹점 관리</h1>
           <p className="mt-2 text-gray-600">가맹점 관리 및 매칭 설정</p>
         </div>
         <Link
           href="/admin/stores/new"
-          className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
         >
-          + New Store
+          <span>+</span>
+          <span>새 가맹점</span>
         </Link>
       </div>
 
@@ -47,7 +48,7 @@ export default async function StoresPage() {
             <p className="text-gray-500 mb-4">등록된 가맹점이 없습니다.</p>
             <Link
               href="/admin/stores/new"
-              className="text-primary-600 hover:text-primary-700 font-medium"
+              className="text-blue-600 hover:text-blue-700 font-medium"
             >
               첫 번째 가맹점 추가하기 →
             </Link>
@@ -56,27 +57,13 @@ export default async function StoresPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Store Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Region
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Location
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Store Code
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Customer ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">가맹점명</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">리전</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">위치</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">매장 코드</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">고객 ID</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상태</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">작업</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -103,27 +90,23 @@ export default async function StoresPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {store.active ? (
-                      <span className="px-2 py-1 text-xs font-medium rounded bg-green-100 text-green-800">
-                        Active
-                      </span>
+                      <span className="px-2 py-1 text-xs font-medium rounded bg-green-100 text-green-800">활성</span>
                     ) : (
-                      <span className="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-800">
-                        Inactive
-                      </span>
+                      <span className="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-800">비활성</span>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <Link
                       href={`/admin/stores/${store.store_id}`}
-                      className="text-primary-600 hover:text-primary-900 mr-4"
+                      className="text-blue-600 hover:text-blue-900 mr-4"
                     >
-                      View
+                      상세
                     </Link>
                     <Link
                       href={`/admin/stores/${store.store_id}/edit`}
                       className="text-gray-600 hover:text-gray-900"
                     >
-                      Edit
+                      수정
                     </Link>
                   </td>
                 </tr>

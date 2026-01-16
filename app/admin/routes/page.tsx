@@ -28,14 +28,15 @@ export default async function RoutesPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Routes / 배송 코스</h1>
+          <h1 className="text-3xl font-bold text-gray-900">배송 코스 관리</h1>
           <p className="mt-2 text-gray-600">배송 그룹 및 스케줄 관리</p>
         </div>
         <Link
           href="/admin/routes/new"
-          className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
         >
-          + New Route
+          <span>+</span>
+          <span>새 배송 코스</span>
         </Link>
       </div>
 
@@ -45,7 +46,7 @@ export default async function RoutesPage() {
             <p className="text-gray-500 mb-4">등록된 배송 코스가 없습니다.</p>
             <Link
               href="/admin/routes/new"
-              className="text-primary-600 hover:text-primary-700 font-medium"
+              className="text-blue-600 hover:text-blue-700 font-medium"
             >
               첫 번째 배송 코스 추가하기 →
             </Link>
@@ -54,24 +55,12 @@ export default async function RoutesPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Route Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Region
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Active Days
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Cutoff Time
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">코스명</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">리전</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">운영 요일</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">마감 시간</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상태</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">작업</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -91,27 +80,23 @@ export default async function RoutesPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {route.active ? (
-                      <span className="px-2 py-1 text-xs font-medium rounded bg-green-100 text-green-800">
-                        Active
-                      </span>
+                      <span className="px-2 py-1 text-xs font-medium rounded bg-green-100 text-green-800">활성</span>
                     ) : (
-                      <span className="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-800">
-                        Inactive
-                      </span>
+                      <span className="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-800">비활성</span>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <Link
                       href={`/admin/routes/${route.route_id}`}
-                      className="text-primary-600 hover:text-primary-900 mr-4"
+                      className="text-blue-600 hover:text-blue-900 mr-4"
                     >
-                      View
+                      상세
                     </Link>
                     <Link
                       href={`/admin/routes/${route.route_id}/edit`}
                       className="text-gray-600 hover:text-gray-900"
                     >
-                      Edit
+                      수정
                     </Link>
                   </td>
                 </tr>

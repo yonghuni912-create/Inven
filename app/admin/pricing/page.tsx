@@ -34,20 +34,21 @@ export default async function PricingPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Pricing</h1>
+          <h1 className="text-3xl font-bold text-gray-900">가격 관리</h1>
           <p className="mt-2 text-gray-600">다단계 가격 관리 및 마진 분석</p>
         </div>
         <Link
           href="/admin/pricing/new"
-          className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
         >
-          + Add Price
+          <span>+</span>
+          <span>새 가격</span>
         </Link>
       </div>
 
       {/* Price Type Legend */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Price Types</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">가격 유형 안내</h2>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {priceTypes.map(type => (
             <div key={type} className="border border-gray-200 rounded p-3">
@@ -71,7 +72,7 @@ export default async function PricingPage() {
             <p className="text-gray-500 mb-4">등록된 가격 정보가 없습니다.</p>
             <Link
               href="/admin/pricing/new"
-              className="text-primary-600 hover:text-primary-700 font-medium"
+              className="text-blue-600 hover:text-blue-700 font-medium"
             >
               첫 번째 가격 추가하기 →
             </Link>
@@ -80,27 +81,13 @@ export default async function PricingPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  SKU Code
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Product
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Price Type
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Price
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Effective From
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Effective To
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU 코드</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">품목명</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">가격 유형</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">단가</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">적용 시작</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">적용 종료</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">작업</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -135,7 +122,7 @@ export default async function PricingPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-500">
                         {price.effective_to || (
-                          <span className="text-green-600 font-medium">Current</span>
+                          <span className="text-green-600 font-medium">현재 적용중</span>
                         )}
                       </div>
                     </td>
@@ -144,7 +131,7 @@ export default async function PricingPage() {
                         href={`/admin/pricing/${price.sku_price_id}/edit`}
                         className="text-gray-600 hover:text-gray-900"
                       >
-                        Edit
+                        수정
                       </Link>
                     </td>
                   </tr>

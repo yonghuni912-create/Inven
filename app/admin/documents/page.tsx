@@ -46,23 +46,32 @@ export default async function DocumentsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Documents</h1>
-        <p className="mt-2 text-gray-600">생성된 문서 및 PDF 관리</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">문서 관리</h1>
+          <p className="mt-2 text-gray-600">생성된 문서 및 PDF 관리</p>
+        </div>
+        <Link
+          href="/admin/documents/new"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+        >
+          <span>+</span>
+          <span>새 문서</span>
+        </Link>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-500">Total Documents</p>
+          <p className="text-sm text-gray-500">전체 문서</p>
           <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-500">Picking Lists</p>
+          <p className="text-sm text-gray-500">피킹 리스트</p>
           <p className="text-2xl font-bold text-blue-600">{stats.pickingLists}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-500">PO Drafts</p>
+          <p className="text-sm text-gray-500">PO 초안</p>
           <p className="text-2xl font-bold text-green-600">{stats.poDrafts}</p>
         </div>
       </div>
@@ -80,27 +89,13 @@ export default async function DocumentsPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Document Type
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Region
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  File Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Generated At
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">문서 유형</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">리전</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">날짜</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">파일명</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">생성 시각</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상태</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">작업</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -112,7 +107,7 @@ export default async function DocumentsPage() {
                       doc.document_type === 'PO_DRAFT' ? 'bg-green-100 text-green-800' :
                       'bg-gray-100 text-gray-800'
                     }`}>
-                      {doc.document_type}
+                      {doc.document_type === 'PICKING_LIST' ? '피킹 리스트' : doc.document_type === 'PO_DRAFT' ? 'PO 초안' : doc.document_type}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -134,7 +129,7 @@ export default async function DocumentsPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button className="text-primary-600 hover:text-primary-900">
-                      Download
+                      다운로드
                     </button>
                   </td>
                 </tr>
