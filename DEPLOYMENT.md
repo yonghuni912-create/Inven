@@ -1,5 +1,7 @@
 # 배포 가이드 (Deployment Guide)
 
+> 📱 **핸드폰으로 배포하시나요?** [모바일 배포 가이드(한국어)](./MOBILE_DEPLOYMENT_KR.md)를 참고하세요!
+
 ## 🚀 Vercel 배포
 
 ### 1. Turso 데이터베이스 생성
