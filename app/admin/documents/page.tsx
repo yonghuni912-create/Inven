@@ -3,6 +3,8 @@ import { documents, regions } from '@/db/schema'
 import { eq, desc } from 'drizzle-orm'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 async function getDocuments() {
   const docs = await db
     .select({

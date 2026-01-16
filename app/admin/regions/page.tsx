@@ -3,6 +3,8 @@ import { regions } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 async function getRegions() {
   return await db.select().from(regions)
 }

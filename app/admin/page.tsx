@@ -2,6 +2,8 @@ import { db } from '@/db'
 import { regions, orders, inventory, jobRuns } from '@/db/schema'
 import { sql, desc, eq } from 'drizzle-orm'
 
+export const dynamic = 'force-dynamic'
+
 async function getDashboardData() {
   // Get active regions
   const activeRegions = await db
