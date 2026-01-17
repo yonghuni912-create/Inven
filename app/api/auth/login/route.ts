@@ -12,6 +12,31 @@ function hashPassword(password: string): string {
   return createHash('sha256').update(password).digest('hex')
 }
 
+// Ensure admin user exists on first login attempt
+async function ensureAdminExists() {
+  const adminEmail = 'admin@bbq.com'
+  const [existing] = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, adminEmail))
+    .limit(1)
+
+  if (!existing) {
+    try {
+      await db.insert(users).values({
+        email: adminEmail,
+        password_hash: hashPassword('admin123'),
+        name: 'BBQ Admin',
+        role: 'ADMIN',
+        active: true,
+      })
+      console.log('Admin user created automatically')
+    } catch (e) {
+      console.error('Failed to create admin:', e)
+    }
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json()
@@ -19,6 +44,9 @@ export async function POST(request: NextRequest) {
     if (!email || !password) {
       return NextResponse.json({ error: '이메일과 비밀번호를 입력하세요.' }, { status: 400 })
     }
+
+    // Auto-create admin if not exists
+    await ensureAdminExists()
 
     // Find user
     const [user] = await db
@@ -55,7 +83,8 @@ export async function POST(request: NextRequest) {
       .sign(JWT_SECRET)
 
     // Set cookie
-    cookies().set('auth-token', token, {
+    const cookieStore = await cookies()
+    cookieStore.set('auth-token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -74,6 +103,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Login error:', error)
-    return NextResponse.json({ error: '로그인 처리 중 오류가 발생했습니다.' }, { status: 500 })
+    return NextResponse.json({ error: '로그인 처리 중 오류가 발생했습니다.', details: String(error) }, { status: 500 })
   }
 }
