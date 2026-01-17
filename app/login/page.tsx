@@ -11,37 +11,25 @@ export default function LoginPage() {
   const [autoLogin, setAutoLogin] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [checkingAuth, setCheckingAuth] = useState(true)
+  const [ready, setReady] = useState(false)
 
-  // Check for saved email and auto-login on mount
+  // Check for saved email on mount
   useEffect(() => {
     const savedEmail = localStorage.getItem('savedEmail')
     const savedAutoLogin = localStorage.getItem('autoLogin') === 'true'
-    
+
     if (savedEmail) {
       setEmail(savedEmail)
       setRememberEmail(true)
     }
-    
+
     if (savedAutoLogin) {
       setAutoLogin(true)
-      // Try auto-login
-      checkAuthAndRedirect()
-    } else {
-      setCheckingAuth(false)
     }
-  }, [])
 
-  const checkAuthAndRedirect = async () => {
-    try {
-      const res = await fetch('/api/auth/me')
-      if (res.ok) {
-        router.push('/admin')
-        return
-      }
-    } catch {}
-    setCheckingAuth(false)
-  }
+    // Always show login form after initialization
+    setReady(true)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -83,10 +71,10 @@ export default function LoginPage() {
     }
   }
 
-  if (checkingAuth) {
+  if (!ready) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-gray-600">로그인 확인 중...</div>
+        <div className="text-gray-600">로딩 중...</div>
       </div>
     )
   }
