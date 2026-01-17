@@ -1,10 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
-  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rememberEmail, setRememberEmail] = useState(false)
@@ -13,21 +11,12 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [ready, setReady] = useState(false)
 
-  // Check for saved email on mount
   useEffect(() => {
     const savedEmail = localStorage.getItem('savedEmail')
-    const savedAutoLogin = localStorage.getItem('autoLogin') === 'true'
-
     if (savedEmail) {
       setEmail(savedEmail)
       setRememberEmail(true)
     }
-
-    if (savedAutoLogin) {
-      setAutoLogin(true)
-    }
-
-    // Always show login form after initialization
     setReady(true)
   }, [])
 
@@ -41,6 +30,7 @@ export default function LoginPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
+        credentials: 'include',
       })
 
       const data = await res.json()
@@ -58,13 +48,8 @@ export default function LoginPage() {
         localStorage.removeItem('savedEmail')
       }
 
-      if (autoLogin) {
-        localStorage.setItem('autoLogin', 'true')
-      } else {
-        localStorage.removeItem('autoLogin')
-      }
-
-      router.push('/admin')
+      // Force navigation with full page reload to ensure cookie is applied
+      window.location.href = '/admin'
     } catch (err) {
       setError('서버 연결에 실패했습니다.')
       setLoading(false)
@@ -100,7 +85,9 @@ export default function LoginPage() {
             </label>
             <input
               id="email"
+              name="email"
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -115,7 +102,9 @@ export default function LoginPage() {
             </label>
             <input
               id="password"
+              name="password"
               type="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
